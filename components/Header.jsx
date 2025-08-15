@@ -3,30 +3,32 @@ import { Link } from 'react-router-dom';
 
 const Header = ({ isAuthenticated, onLogout }) => {
   return (
-    <header className="w-full border-b bg-white relative p-5">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-        
+    <header className="w-full border-b bg-white relative p-3 sm:p-5">
+      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+
         {/* LEFT */}
-        <div className="flex items-center gap-4 sm:gap-6">
-          <img src={logo} alt="Konn3ct" className="h-6 sm:h-8" />
-          <nav className="hidden md:flex gap-4 text-sm text-gray-600">
-            <a href="#">Solutions</a>
-            <a href="#">Contact Sales</a>
-            <a href="#">Plan & Pricing</a>
-          </nav>
+        <div className="flex items-center justify-between w-full sm:w-auto gap-4">
+          <div className="flex items-center gap-3">
+            <img src={logo} alt="Konn3ct" className="h-6 sm:h-8" />
+            <nav className="hidden md:flex gap-4 text-sm text-gray-600">
+              <a href="#">Solutions</a>
+              <a href="#">Contact Sales</a>
+              <a href="#">Plan & Pricing</a>
+            </nav>
+          </div>
         </div>
 
-        {/* CENTER */}
+        {/* CENTER (only if authenticated) */}
         {isAuthenticated && (
-          <div className="absolute left-1/2 transform -translate-x-1/2">
-            <h1 className="text-base sm:text-lg md:text-xl font-semibold text-center">
+          <div className="text-center sm:flex-1 sm:px-4">
+            <h1 className="text-sm sm:text-lg md:text-xl font-semibold leading-snug break-words">
               2025_1 Online Facilitation Briefing for Students
             </h1>
           </div>
         )}
 
         {/* RIGHT */}
-        <div className="flex gap-2 sm:gap-3">
+        <div className="flex flex-wrap justify-center sm:justify-end gap-2">
           {!isAuthenticated && (
             <Link to="/" className="px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm text-gray-600">
               Join a Meeting
@@ -51,6 +53,7 @@ const Header = ({ isAuthenticated, onLogout }) => {
             </button>
           )}
         </div>
+
       </div>
     </header>
   );
