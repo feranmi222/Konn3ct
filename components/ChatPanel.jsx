@@ -45,7 +45,7 @@ export default function ChatPanel({ onClose }) {
         <input
           type="text"
           placeholder="Ask anything about the meeting..."
-          className="border rounded-md p-2 w-full mt-32"
+          className="border rounded-md p-2 w-full mt-60 md:mt-auto"
         />
       </aside>
     </>
