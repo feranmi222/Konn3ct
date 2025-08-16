@@ -8,17 +8,23 @@ const Header = ({ isAuthenticated, onLogout }) => {
   useEffect(() => {
     const fetchTitle = async () => {
       try {
-        const response = await fetch(
-          "https://meet.konn3ct.ng/presentation/6d333d16dbadc4a10293c08bbd7d6e6d19be81ff-1713508687932/metadata.xml"
-        );
+        // ✅ Use the proxy instead of hitting meet.konn3ct.ng directly
+        const id =
+          "6d333d16dbadc4a10293c08bbd7d6e6d19be81ff-1713508687932"; // you can later pass this dynamically
+        const response = await fetch(`/api/presentation/${id}/metadata.xml`);
+
+        if (!response.ok) throw new Error("Failed to fetch metadata");
+
         const text = await response.text();
 
-        // Parse XML
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(text, "text/xml");
 
-        // Look for <meetingName> (common in BigBlueButton metadata.xml)
-        const titleNode = xmlDoc.getElementsByTagName("meetingName")[0];
+        // Try multiple possible tag names
+        const titleNode =
+          xmlDoc.getElementsByTagName("meetingName")[0] ||
+          xmlDoc.getElementsByTagName("name")[0] ||
+          xmlDoc.getElementsByTagName("title")[0];
 
         if (titleNode) {
           setVideoTitle(titleNode.textContent);
