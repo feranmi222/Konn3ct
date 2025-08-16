@@ -2,43 +2,36 @@ import { useEffect, useState } from "react";
 import logo from "../src/assets/logo.png";
 import { Link } from "react-router-dom";
 
-const Header = ({ isAuthenticated, onLogout }) => {
+const Header = ({ isAuthenticated, onLogout, recordId }) => {
   const [videoTitle, setVideoTitle] = useState("Loading...");
 
   useEffect(() => {
     const fetchTitle = async () => {
-      try {
-        // ✅ Use the proxy instead of hitting meet.konn3ct.ng directly
-        const id =
-          "6d333d16dbadc4a10293c08bbd7d6e6d19be81ff-1713508687932"; // you can later pass this dynamically
-        const response = await fetch(`/api/presentation/${id}/metadata.xml`);
+      if (!recordId) return; // ✅ Skip if no recordId passed
 
+      try {
+        const response = await fetch(`/api/presentation/${recordId}/metadata.xml`);
         if (!response.ok) throw new Error("Failed to fetch metadata");
 
         const text = await response.text();
-
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(text, "text/xml");
 
-        // Try multiple possible tag names
+        // ✅ Try multiple possible tag names
         const titleNode =
           xmlDoc.getElementsByTagName("meetingName")[0] ||
           xmlDoc.getElementsByTagName("name")[0] ||
           xmlDoc.getElementsByTagName("title")[0];
 
-        if (titleNode) {
-          setVideoTitle(titleNode.textContent);
-        } else {
-          setVideoTitle("Untitled Video");
-        }
+        setVideoTitle(titleNode ? titleNode.textContent : "Untitled Video");
       } catch (err) {
         console.error("Error fetching metadata:", err);
-        setVideoTitle("Failed to load title");
+        setVideoTitle("Untitled Video");
       }
     };
 
     fetchTitle();
-  }, []);
+  }, [recordId]); // ✅ Re-run whenever recordId changes
 
   return (
     <header className="w-full border-b bg-white relative p-3 sm:p-5">
@@ -64,26 +57,25 @@ const Header = ({ isAuthenticated, onLogout }) => {
           )}
 
           {!isAuthenticated && (
-            <Link
-              to="/"
-              className="px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm text-gray-600"
-            >
-              Join a Meeting
-            </Link>
+            <>
+              <Link
+                to="/"
+                className="px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm text-gray-600"
+              >
+                Join a Meeting
+              </Link>
+              <Link
+                to="/passcode"
+                className="px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm text-gray-600"
+              >
+                Sign in
+              </Link>
+              <button className="px-3 sm:px-4 py-1 sm:py-2 bg-blue-600 text-white rounded-md text-xs sm:text-sm">
+                <Link to="/">Sign Up Here</Link>
+              </button>
+            </>
           )}
-          {!isAuthenticated && (
-            <Link
-              to="/passcode"
-              className="px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm text-gray-600"
-            >
-              Sign in
-            </Link>
-          )}
-          {!isAuthenticated && (
-            <button className="px-3 sm:px-4 py-1 sm:py-2 bg-blue-600 text-white rounded-md text-xs sm:text-sm">
-              <Link to="/">Sign Up Here</Link>
-            </button>
-          )}
+
           {isAuthenticated && (
             <button
               onClick={onLogout}

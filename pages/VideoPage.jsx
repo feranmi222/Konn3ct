@@ -76,16 +76,16 @@ export default function VideoPage() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row w-full max-w-7xl mx-auto h-full relative px-4 md:px-6 lg:px-8 mt-6">
-      {/* Video Section */}
-      <div className="flex-1 relative w-full rounded-xl border-2 border-gray-300 shadow-xl overflow-hidden">
-        <video
-          ref={videoRef}
-          src="https://meet.konn3ct.ng/presentation/8f2b2142080438f766fd0f47c999e9158a9c2208-1739435254662/video/webcams.mp4"
-          className="w-full h-full object-contain"
-          onTimeUpdate={updateProgress}
-          onEnded={() => setIsPlaying(false)}
-        ></video>
+  <div className="flex flex-col md:flex-row w-full max-w-7xl mx-auto h-[calc(100vh-120px)] relative px-4 md:px-6 lg:px-8 mt-6">
+    {/* Video Section */}
+    <div className="flex-1 relative w-full rounded-xl border-2 border-gray-300 shadow-xl overflow-hidden">
+      <video
+        ref={videoRef}
+        src="https://meet.konn3ct.ng/presentation/8f2b2142080438f766fd0f47c999e9158a9c2208-1739435254662/video/webcams.mp4"
+        className="w-full h-full object-contain"
+        onTimeUpdate={updateProgress}
+        onEnded={() => setIsPlaying(false)}
+      ></video>
 
         {/* Custom Controls */}
         <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-black/70 to-transparent p-3 text-white">
