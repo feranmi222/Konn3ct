@@ -9,33 +9,31 @@ export default function PasscodePage({ onSignIn, recordId }) {
 
     const fetchTitle = async () => {
       try {
-        // ✅ Fetch metadata.xml for this recordId
         const response = await fetch(
-          `/api/presentation/${recordId}/metadata.xml`
+          `https://meet.konn3ct.ng/presentation/${recordId}/metadata.xml`
         );
-
         if (!response.ok) throw new Error("Failed to fetch metadata");
 
         const text = await response.text();
-
-        // Parse XML
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(text, "text/xml");
 
-        // Try multiple possible title fields
-        const titleNode =
-          xmlDoc.getElementsByTagName("meetingName")[0] ||
-          xmlDoc.getElementsByTagName("name")[0] ||
-          xmlDoc.getElementsByTagName("title")[0];
+        // ✅ First, try <meta><meetingName>
+        let titleNode = xmlDoc.getElementsByTagName("meetingName")[0];
 
-        if (titleNode) {
-          setMeetingName(titleNode.textContent);
-        } else {
-          setMeetingName("Untitled Meeting");
+        // ✅ Fallback: use the "name" attribute on <meeting>
+        if (!titleNode) {
+          const meetingNode = xmlDoc.getElementsByTagName("meeting")[0];
+          if (meetingNode?.getAttribute("name")) {
+            setMeetingName(meetingNode.getAttribute("name"));
+            return;
+          }
         }
+
+        setMeetingName(titleNode ? titleNode.textContent.trim() : "Untitled Meeting");
       } catch (err) {
         console.error("Error fetching meeting title:", err);
-        setMeetingName("Failed to load meeting");
+        setMeetingName("Untitled Meeting");
       }
     };
 

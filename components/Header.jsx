@@ -7,23 +7,31 @@ const Header = ({ isAuthenticated, onLogout, recordId }) => {
 
   useEffect(() => {
     const fetchTitle = async () => {
-      if (!recordId) return; // ✅ Skip if no recordId passed
+      if (!recordId) return;
 
       try {
-        const response = await fetch(`/api/presentation/${recordId}/metadata.xml`);
+        const response = await fetch(
+          `https://meet.konn3ct.ng/presentation/${recordId}/metadata.xml`
+        );
         if (!response.ok) throw new Error("Failed to fetch metadata");
 
         const text = await response.text();
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(text, "text/xml");
 
-        // ✅ Try multiple possible tag names
-        const titleNode =
-          xmlDoc.getElementsByTagName("meetingName")[0] ||
-          xmlDoc.getElementsByTagName("name")[0] ||
-          xmlDoc.getElementsByTagName("title")[0];
+        // ✅ First, try <meta><meetingName>
+        let titleNode = xmlDoc.getElementsByTagName("meetingName")[0];
 
-        setVideoTitle(titleNode ? titleNode.textContent : "Untitled Video");
+        // ✅ Fallback: use the "name" attribute on <meeting>
+        if (!titleNode) {
+          const meetingNode = xmlDoc.getElementsByTagName("meeting")[0];
+          if (meetingNode?.getAttribute("name")) {
+            setVideoTitle(meetingNode.getAttribute("name"));
+            return;
+          }
+        }
+
+        setVideoTitle(titleNode ? titleNode.textContent.trim() : "Untitled Video");
       } catch (err) {
         console.error("Error fetching metadata:", err);
         setVideoTitle("Untitled Video");
@@ -31,7 +39,7 @@ const Header = ({ isAuthenticated, onLogout, recordId }) => {
     };
 
     fetchTitle();
-  }, [recordId]); // ✅ Re-run whenever recordId changes
+  }, [recordId]);
 
   return (
     <header className="w-full border-b bg-white relative p-3 sm:p-5">
@@ -58,16 +66,10 @@ const Header = ({ isAuthenticated, onLogout, recordId }) => {
 
           {!isAuthenticated && (
             <>
-              <Link
-                to="/"
-                className="px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm text-gray-600"
-              >
+              <Link to="/" className="px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm text-gray-600">
                 Join a Meeting
               </Link>
-              <Link
-                to="/passcode"
-                className="px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm text-gray-600"
-              >
+              <Link to="/passcode" className="px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm text-gray-600">
                 Sign in
               </Link>
               <button className="px-3 sm:px-4 py-1 sm:py-2 bg-blue-600 text-white rounded-md text-xs sm:text-sm">
