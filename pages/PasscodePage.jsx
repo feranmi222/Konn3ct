@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
+import { useParams } from 'react-router-dom';
 
-export default function PasscodePage({ onSignIn, recordId }) {
+export default function PasscodePage({ onSignIn  }) {
   const [passcode, setPasscode] = useState("");
   const [meetingName, setMeetingName] = useState("Loading...");
-
+  const { recordId } = useParams();
   useEffect(() => {
+    
+    console.log("Fetching meeting title for recordId:", recordId);
     if (!recordId) return;
+
 
     const fetchTitle = async () => {
       try {
@@ -30,10 +34,10 @@ export default function PasscodePage({ onSignIn, recordId }) {
           }
         }
 
-        setMeetingName(titleNode ? titleNode.textContent.trim() : "Untitled Meeting");
+        setMeetingName(titleNode ? titleNode.textContent.trim() : "Invalid Record ID");
       } catch (err) {
         console.error("Error fetching meeting title:", err);
-        setMeetingName("Untitled Meeting");
+        setMeetingName("Invalid Record ID");
       }
     };
 
@@ -42,7 +46,7 @@ export default function PasscodePage({ onSignIn, recordId }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSignIn(passcode);
+    onSignIn(passcode, recordId);
   };
 
   return (

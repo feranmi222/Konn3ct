@@ -11,10 +11,11 @@ function App() {
   );
   const navigate = useNavigate();
 
-  const handleSignIn = (passcode) => {
+  const handleSignIn = (passcode, record) => {
     if (passcode === "1234") {
+      setRecordId(record);
       setIsAuthenticated(true);
-      navigate(`/video/${recordId}`);
+      // navigate(`/video/${record}`);
     } else {
       alert("Incorrect passcode");
     }
@@ -35,7 +36,7 @@ function App() {
 
       <main className="flex-1 flex items-center justify-center w-full">
         <Routes>
-          <Route
+          {/* <Route
             path="/passcode"
             element={
               isAuthenticated ? (
@@ -47,27 +48,26 @@ function App() {
                 />
               )
             }
-          />
+          /> */}
 
           <Route
-            path="/"
+            path="/playback/:recordId"
             element={
               isAuthenticated ? (
-                <Navigate to={`/video/${recordId}`} replace />
+                <VideoPage recordId={recordId} />
               ) : (
                 <PasscodePage
                   onSignIn={handleSignIn}
-                  recordId={recordId} // ✅ pass recordId
                 />
               )
             }
           />
 
           <Route
-            path="/video/:recordId"
+            path="/video"
             element={
               isAuthenticated ? (
-                <VideoPage setRecordId={setRecordId} />
+                <VideoPage recordId={recordId} />
               ) : (
                 <Navigate to="/passcode" replace />
               )

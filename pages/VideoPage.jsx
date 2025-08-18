@@ -14,7 +14,7 @@ import {
 } from "react-icons/fa";
 import ChatPanel from "../components/ChatPanel";
 
-export default function VideoPage() {
+export default function VideoPage({ recordId }) {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
@@ -60,7 +60,7 @@ export default function VideoPage() {
 
   const handleDownload = () => {
     const url =
-      "https://meet.konn3ct.ng/presentation/8f2b2142080438f766fd0f47c999e9158a9c2208-1739435254662/video/webcams.mp4";
+      `https://meet.konn3ct.ng/presentation/${recordId}/video/webcams.mp4`;
     const link = document.createElement("a");
     link.href = url;
     link.setAttribute("download", "video.mp4");
@@ -81,7 +81,7 @@ export default function VideoPage() {
     <div className="flex-1 relative w-full rounded-xl border-2 border-gray-300 shadow-xl overflow-hidden">
       <video
         ref={videoRef}
-        src="https://meet.konn3ct.ng/presentation/8f2b2142080438f766fd0f47c999e9158a9c2208-1739435254662/video/webcams.mp4"
+        src={`https://meet.konn3ct.ng/presentation/${recordId}/video/webcams.mp4`}
         className="w-full h-full object-contain"
         onTimeUpdate={updateProgress}
         onEnded={() => setIsPlaying(false)}
