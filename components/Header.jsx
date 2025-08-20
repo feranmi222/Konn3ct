@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import logo from "../src/assets/logo.png";
+import logo from "../src/assets/logo/logo.png";
 import { Link } from "react-router-dom";
 
 const Header = ({ isAuthenticated, onLogout, recordId }) => {
@@ -49,9 +49,9 @@ const Header = ({ isAuthenticated, onLogout, recordId }) => {
           <div className="flex items-center gap-3">
             <img src={logo} alt="Konn3ct" className="h-6 sm:h-8" />
             <nav className="hidden md:flex gap-4 text-sm text-gray-600">
-              <a href="#">Solutions</a>
-              <a href="#">Contact Sales</a>
-              <a href="#">Plan & Pricing</a>
+              <Link>Solutions</Link>
+              <Link>Contact Sales</Link>
+              <Link>Plan & Pricing</Link>
             </nav>
           </div>
         </div>
@@ -69,7 +69,7 @@ const Header = ({ isAuthenticated, onLogout, recordId }) => {
               <Link to="/" className="px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm text-gray-600">
                 Join a Meeting
               </Link>
-              <Link to="/passcode" className="px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm text-gray-600">
+              <Link to="/" className="px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm text-gray-600">
                 Sign in
               </Link>
               <button className="px-3 sm:px-4 py-1 sm:py-2 bg-blue-600 text-white rounded-md text-xs sm:text-sm">
